@@ -25,4 +25,10 @@ class Warior():
         print(f"Сила война - {self.power}")
         print(f"Выносливость война - {self.endurance}")
         print(f"Цвет волосс война - {self.hair_color}")
-        
+
+
+war1 = Warior("Степа", "90", "80", "рыжие")
+war2 = Warior("Егор", "95", "90", "блондин")
+
+print(war1.name, war1.power, war1.endurance, war1.hair_color)
+
