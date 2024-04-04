@@ -32,3 +32,4 @@ o.add_task("проверить приход по заявке", "07.12.2024")
 o.show_tasks()
 
 o.complete_tasks("сделать заявку")
+o.complete_tasks("проверить заявку")
