@@ -45,6 +45,7 @@ class Zoo:
     def list_animals(self):
         for animal in self.animals:
             print(f"Животное: {animal.name}, Возраст: {animal.age}, Вид: {animal.get_species()}")
+            print(f"Звук: {animal.make_sound()}")
 
     def list_staff(self):
         for person in self.staff:
