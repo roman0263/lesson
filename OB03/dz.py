@@ -1,32 +1,37 @@
 # 1. Создайте базовый класс `Animal`, который будет содержать общие атрибуты (например, `name`, `age`) и методы (`make_sound()`, `eat()`) для всех животных.
 
 import pickle
-class Animal():
+
+class Animal:
     def __init__(self, name, age):
         self.name = name
         self.age = age
     def make_sound(self):
-        return f"{self.name}издает звук"
+        return f"{self.name} издает звук"
 
     def eat(self):
         return f"{self.name} ест"
-
 
 class Bird(Animal):
     def make_sound(self):
         return f"{self.name} поет"
 
+    def get_species(self):
+        return "Птица"
+
 class Mammal(Animal):
     def make_sound(self):
         return f"{self.name} рычит"
+
+    def get_species(self):
+        return "Млекопитающее"
 
 class Reptile(Animal):
     def make_sound(self):
         return f"{self.name} шипит"
 
-def animal_sound(animals):
-    for animal in animals:
-        print(animal.make_sound())
+    def get_species(self):
+        return "Рептилия"
 
 class Zoo:
     def __init__(self):
@@ -38,15 +43,28 @@ class Zoo:
 
     def add_staff(self, person):
         self.staff.append(person)
+
+    def list_animals(self):
+        for animal in self.animals:
+            print(f"Животное: {animal.name}, Возраст: {animal.age}, Вид: {animal.get_species()}")
+
+    def list_staff(self):
+        for person in self.staff:
+            print(f"Сотрудник: {person.get_role()}")
+
 class ZooKeeper:
     def feed_animal(self, animal):
         return f"{animal.name} был накормлен"
+
+    def get_role(self):
+        return "Смотритель"
 
 class Veterinarian:
     def heal_animal(self, animal):
         return f"{animal.name} был вылечен"
 
-
+    def get_role(self):
+        return "Ветеринар"
 
 def save_zoo(zoo, filename):
     with open(filename, 'wb') as f:
@@ -55,3 +73,22 @@ def save_zoo(zoo, filename):
 def load_zoo(filename):
     with open(filename, 'rb') as f:
         return pickle.load(f)
+
+zoo = Zoo()
+
+parrot = Bird("Вася", 3)
+tiger = Mammal("Шах", 5)
+snake = Reptile("Горыныч", 4)
+
+zoo.add_animal(parrot)
+zoo.add_animal(tiger)
+zoo.add_animal(snake)
+
+keeper = ZooKeeper()
+vet = Veterinarian()
+
+zoo.add_staff(keeper)
+zoo.add_staff(vet)
+
+zoo.list_animals()
+zoo.list_staff()
