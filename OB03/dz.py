@@ -92,3 +92,13 @@ zoo.add_staff(vet)
 
 zoo.list_animals()
 zoo.list_staff()
+
+# Сохранение текущего состояния зоопарка
+save_zoo(zoo, 'zoo_state.pickle')
+
+# Загрузка сохранённого состояния зоопарка
+loaded_zoo = load_zoo('zoo_state.pickle')
+
+# Проверка загруженных данных
+loaded_zoo.list_animals()
+loaded_zoo.list_staff()
