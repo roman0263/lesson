@@ -11,7 +11,7 @@ image = pygame.image.load("picPyton.png")
 image = pygame.transform.scale(image, (100, 100))
 image_rect = image.get_rect()
 
-speed = 3
+
 
 run = True
 
@@ -19,15 +19,10 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        image_rect.x -= speed
-    if keys[pygame.K_RIGHT]:
-        image_rect.x += speed
-    if keys[pygame.K_UP]:
-        image_rect.y -= speed
-    if keys[pygame.K_DOWN]:
-        image_rect.y += speed
+        if event.type == pygame.MOUSEMOTION:
+            mouseX, mouseY = pygame.mouse.get_pos()
+            image_rect.x = mouseX -50
+            image_rect.y = mouseY -50
 
     screen.fill((0, 0, 0))
     screen.blit(image, image_rect)
