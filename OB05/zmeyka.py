@@ -14,30 +14,31 @@ pygame.display.set_caption("Змейка")
 
 class Snake:
     def __init__(self):
-        self.body = [(100, 100), (100, 120), (100, 140)]  # Изменено для предотвращения немедленного столкновения
-        self.direction = (0, -20)  # Поправлено на большее расстояние
+        self.body = [(100, 100), (100, 120), (100, 140)]
+        self.direction = (0, -20)  # начальное направление движения
         self.grow = False
+        self.speed = 20  # Скорость движения змейки
 
     def move(self):
         if not self.grow:
-            self.body.pop(0)
+            self.body.pop(0)  # Удаляем последний элемент тела, если змейка не растет
         self.grow = False
 
         head_x, head_y = self.body[-1]
         dir_x, dir_y = self.direction
         new_head = (head_x + dir_x, head_y + dir_y)
-        self.body.append(new_head)
+        self.body.append(new_head)  # Добавляем новую голову
 
     def change_direction(self, new_direction):
         if (new_direction[0] != -self.direction[0] or new_direction[1] != -self.direction[1]):
-            self.direction = new_direction
+            self.direction = (new_direction[0] * self.speed, new_direction[1] * self.speed)  # Изменяем направление с учетом скорости
 
     def check_collision(self):
         head = self.body[-1]
         return head in self.body[:-1]
 
     def grow_up(self):
-        self.grow = True
+        self.grow = True  # Змейка будет расти при следующем вызове move()
 
 class Food:
     def __init__(self, window_width, window_height, cell_size, snake):
@@ -52,7 +53,7 @@ class Food:
             x = random.randint(0, (self.window_width - self.cell_size) // self.cell_size) * self.cell_size
             y = random.randint(0, (self.window_height - self.cell_size) // self.cell_size) * self.cell_size
             if (x, y) not in self.snake.body:
-                return (x, y)
+                return (x, y)  # Гарантируем, что еда не появится на теле змейки
 
 class Game:
     def __init__(self, window):
@@ -69,13 +70,13 @@ class Game:
                     running = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
-                        self.snake.change_direction((0, -20))
+                        self.snake.change_direction((0, -1))
                     elif event.key == pygame.K_DOWN:
-                        self.snake.change_direction((0, 20))
+                        self.snake.change_direction((0, 1))
                     elif event.key == pygame.K_LEFT:
-                        self.snake.change_direction((-20, 0))
+                        self.snake.change_direction((-1, 0))
                     elif event.key == pygame.K_RIGHT:
-                        self.snake.change_direction((20, 0))
+                        self.snake.change_direction((1, 0))
 
             self.snake.move()
             if self.snake.body[-1] == self.food.position:
@@ -85,7 +86,7 @@ class Game:
             self.window.fill((0, 0, 0))
             self.draw_objects()
             pygame.display.flip()
-            self.clock.tick(10)
+            self.clock.tick(5)  # Увеличиваем FPS для более быстрой игры
 
     def draw_objects(self):
         for segment in self.snake.body:
