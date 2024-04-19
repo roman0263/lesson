@@ -40,10 +40,11 @@ class Snake:
         self.grow = True
 
 class Food:
-    def __init__(self, window_width, window_height, cell_size):
+    def __init__(self, window_width, window_height, cell_size, snake):
         self.window_width = window_width
         self.window_height = window_height
         self.cell_size = cell_size
+        self.snake = snake
         self.position = self.spawn_food()
 
     def spawn_food(self):
@@ -57,8 +58,7 @@ class Game:
     def __init__(self, window):
         self.window = window
         self.snake = Snake()
-        self.food = Food(window_width, window_height, 20)
-        self.food.snake = self.snake  # Pass snake reference to food for collision checking
+        self.food = Food(window_width, window_height, 20, self.snake)
         self.clock = pygame.time.Clock()
 
     def run(self):
