@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 
 # Инициализация Pygame
 pygame.init()
@@ -13,35 +14,30 @@ pygame.display.set_caption("Змейка")
 
 class Snake:
     def __init__(self):
-        self.body = [(20, 20), (20, 21), (20, 22)]  # Начальное положение змейки
-        self.direction = (0, -1)  # Начальное направление движения (вверх)
-        self.grow = False  # Нужно ли змейке расти
+        self.body = [(100, 100), (100, 120), (100, 140)]  # Изменено для предотвращения немедленного столкновения
+        self.direction = (0, -20)  # Поправлено на большее расстояние
+        self.grow = False
 
     def move(self):
         if not self.grow:
-            self.body.pop(0)  # Удаление последнего элемента, если змейка не растет
-        self.grow = False  # Сброс флага роста
+            self.body.pop(0)
+        self.grow = False
 
         head_x, head_y = self.body[-1]
         dir_x, dir_y = self.direction
-        new_head = (head_x + dir_x, head_y + dir_y)  # Вычисление новой головы
-        self.body.append(new_head)  # Добавление новой головы в список тела
+        new_head = (head_x + dir_x, head_y + dir_y)
+        self.body.append(new_head)
 
     def change_direction(self, new_direction):
-        # Изменение направления, если это не приводит к движению назад
-        if (new_direction[0] * self.direction[0] == 0 and
-            new_direction[1] * self.direction[1] == 0):
+        if (new_direction[0] != -self.direction[0] or new_direction[1] != -self.direction[1]):
             self.direction = new_direction
 
     def check_collision(self):
         head = self.body[-1]
-        return head in self.body[:-1]  # Проверка столкновения головы с телом
+        return head in self.body[:-1]
 
     def grow_up(self):
-        self.grow = True  # Установка флага роста, чтобы змейка выросла после следующего движения
-
-
-import random
+        self.grow = True
 
 class Food:
     def __init__(self, window_width, window_height, cell_size):
@@ -51,40 +47,53 @@ class Food:
         self.position = self.spawn_food()
 
     def spawn_food(self):
-        # Генерация случайной позиции для еды
-        x = random.randint(0, (self.window_width - self.cell_size) // self.cell_size) * self.cell_size
-        y = random.randint(0, (self.window_height - self.cell_size) // self.cell_size) * self.cell_size
-        return (x, y)
+        while True:
+            x = random.randint(0, (self.window_width - self.cell_size) // self.cell_size) * self.cell_size
+            y = random.randint(0, (self.window_height - self.cell_size) // self.cell_size) * self.cell_size
+            if (x, y) not in self.snake.body:
+                return (x, y)
 
 class Game:
     def __init__(self, window):
         self.window = window
         self.snake = Snake()
-        self.food = Food(800, 600, 20)  # Примерные значения для размеров окна и размера ячейки
+        self.food = Food(window_width, window_height, 20)
+        self.food.snake = self.snake  # Pass snake reference to food for collision checking
+        self.clock = pygame.time.Clock()
 
     def run(self):
         running = True
         while running:
-            # Основной цикл игры будет реализован здесь
-            pass
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        self.snake.change_direction((0, -20))
+                    elif event.key == pygame.K_DOWN:
+                        self.snake.change_direction((0, 20))
+                    elif event.key == pygame.K_LEFT:
+                        self.snake.change_direction((-20, 0))
+                    elif event.key == pygame.K_RIGHT:
+                        self.snake.change_direction((20, 0))
 
+            self.snake.move()
+            if self.snake.body[-1] == self.food.position:
+                self.snake.grow_up()
+                self.food.position = self.food.spawn_food()
 
-# Основной игровой цикл
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+            self.window.fill((0, 0, 0))
+            self.draw_objects()
+            pygame.display.flip()
+            self.clock.tick(10)
 
-    # Здесь будет обновление игры
+    def draw_objects(self):
+        for segment in self.snake.body:
+            pygame.draw.rect(self.window, (0, 255, 0), (segment[0], segment[1], 20, 20))
+        pygame.draw.rect(self.window, (255, 0, 0), (self.food.position[0], self.food.position[1], 20, 20))
 
-    # Здесь будет отрисовка элементов игры
-
-    # Обновление содержимого экрана
-    pygame.display.flip()
-
-# Выход из Pygame
-pygame.quit()
-sys.exit()
-
-
+if __name__ == '__main__':
+    game = Game(window)
+    game.run()
+    pygame.quit()
+    sys.exit()
