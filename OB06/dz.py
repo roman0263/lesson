@@ -55,12 +55,4 @@ class Game:
 
         winner = self.player if self.player.is_alive() else self.computer
         print(f"Игра окончена. Победитель: {winner.name}")
-def main():
-    print("Добро пожаловать в игру 'Битва героев'!")
-    player_name = input("Введите ваше имя, герой: ")
-    game = Game(player_name, "Компьютер")
-    game.start()
-
-if __name__ == "__main__":
-    main()
-
+# хз что с этим делать
