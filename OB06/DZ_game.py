@@ -55,3 +55,4 @@ class Game:
 
         winner = self.player if self.player.is_alive() else self.computer
         print(f"Игра окончена. Победитель: {winner.name}")
+# хз что с этим делать
